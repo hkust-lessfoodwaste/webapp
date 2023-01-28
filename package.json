@@ -17,7 +17,10 @@
     "@antv/f2-vue": "^4.0.20",
     "@antv/g2plot": "^2.4.23",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "ant-design-vue": "^3.2.15",
+    "axios": "^1.2.3",
     "gh-pages": "^4.0.0",
+    "unplugin-vue-components": "^0.22.12",
     "vue": "^3.2.45",
     "vue-router": "^4.0.13"
   },
@@ -26,6 +29,7 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
+    "babel-plugin-import": "^1.13.6",
     "postcss": "^8.4.20",
     "tailwindcss": "^3.2.4",
     "vite": "^4.0.0"

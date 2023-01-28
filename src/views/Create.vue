@@ -37,7 +37,7 @@
       </div>
     </div>
     <div class="slider-section">
-      <div>How much rice/noodle did you finish overall?</div>
+      <div>How much rice/noodle did you finish?</div>
       <div class="flex justify-between">
         <input
           type="range"
@@ -50,7 +50,7 @@
       </div>
     </div>
     <div class="slider-section">
-      <div>How much vegetable did you finish overall?</div>
+      <div>How much vegetable did you finish?</div>
       <div class="flex justify-between">
         <input
           type="range"
@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="slider-section">
-      <div>How much meat did you finish overall?</div>
+      <div>How much meat did you finish?</div>
       <div class="flex justify-between">
         <input
           type="range"
@@ -78,7 +78,10 @@
     <div class="text-gray-400 text-xs mx-6">
       * For not applicable food type, please select 100%
     </div>
-    <div class="btn place-content-center text-white text-xl text-center">
+    <div
+      class="btn place-content-center text-white text-xl text-center"
+      @click="handleSubmit"
+    >
       Submit
     </div>
   </div>
@@ -87,26 +90,27 @@
 <script setup>
 import mainHeader from "@/components/mainHeader.vue";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import axiosRequest from "@/utils/request";
+import axios from "axios";
+import { message } from 'ant-design-vue';
 const percentOverall = ref(90);
 const percentRice = ref(90);
 const percentVegetable = ref(90);
 const percentMeat = ref(90);
+let compressedPic = null
 const uploadFile = ref(null);
 const handleTakePic = () => {
   uploadFile.value.click();
-  console.log(uploadFile);
 };
 const handleGetFile = async (e) => {
   let file = e.target.files[0];
-
   const compressedFile = await compressImage(file, {
     quality: 1,
     type: "image/jpeg",
   });
   picUrl.value = URL.createObjectURL(file);
-  console.log(file);
-  console.log(compressedFile);
-  console.log(URL.createObjectURL(compressedFile));
+  compressedPic = compressedFile
 };
 const picUrl = ref();
 
@@ -150,10 +154,34 @@ const compressImage = async (file, { quality = 1, type = file.type }) => {
         );
       };
     };
-
     fileReader.readAsDataURL(file);
   });
-
+};
+const router = useRouter();
+const handleSubmit = async () => {
+  if (compressedPic === null) {
+    message.error('Please take a photo first');
+    return
+  }
+  let bodyFormData = new FormData();
+  bodyFormData.append('pic', compressedPic); 
+  bodyFormData.append('rice', Number(percentRice.value)); 
+  bodyFormData.append('vegetable', Number(percentVegetable.value)); 
+  bodyFormData.append('meat', Number(percentMeat.value)); 
+  bodyFormData.append('overall', Number(percentOverall.value)); 
+  let data = await axiosRequest(
+    "post",
+    "feedback",
+    bodyFormData,
+    true,
+    {"Content-Type": "multipart/form-data"}
+  );
+  if (data.error === false) {
+    message.success("successfully submitted!");
+    router.push({
+      path: "/",
+    });
+  }
 };
 </script>
 
