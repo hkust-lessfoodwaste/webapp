@@ -21,6 +21,7 @@
     "axios": "^1.2.3",
     "gh-pages": "^4.0.0",
     "unplugin-vue-components": "^0.22.12",
+    "vite-svg-loader": "^4.0.0",
     "vue": "^3.2.45",
     "vue-router": "^4.0.13"
   },

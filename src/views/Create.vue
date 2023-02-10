@@ -1,89 +1,91 @@
 <template>
   <div class="page">
     <main-header />
-    <input
-      ref="uploadFile"
-      type="file"
-      style="display: none"
-      accept="image/*"
-      capture="camera"
-      name="file"
-      @change="handleGetFile"
-    />
-    <img
-      class="pic-preview"
-      v-if="picUrl"
-      :src="picUrl"
-      @click="handleTakePic"
-    />
-    <div
-      class="pic-placehoder flex place-content-center"
-      v-else
-      @click="handleTakePic"
-    >
-      <img class="camera-image place-self-center" src="@/assets/camera.svg" />
-    </div>
-    <div class="slider-section">
-      <div>How much food did you finish overall?</div>
-      <div class="flex justify-between">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          v-model="percentOverall"
-          class="slider overall place-self-center"
-        />
-        <div>{{ percentOverall }}%</div>
+    <a-spin :spinning="isLoading" tip="submitting">
+      <input
+        ref="uploadFile"
+        type="file"
+        style="display: none"
+        accept="image/*"
+        capture="camera"
+        name="file"
+        @change="handleGetFile"
+      />
+      <img
+        class="pic-preview"
+        v-if="picUrl"
+        :src="picUrl"
+        @click="handleTakePic"
+      />
+      <div
+        class="pic-placehoder flex place-content-center"
+        v-else
+        @click="handleTakePic"
+      >
+        <camera-icon class="camera-image place-self-center" />
       </div>
-    </div>
-    <div class="slider-section">
-      <div>How much rice/noodle did you finish?</div>
-      <div class="flex justify-between">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          v-model="percentRice"
-          class="slider rice place-self-center"
-        />
-        <div>{{ percentRice }}%</div>
+      <div class="slider-section">
+        <div>How much food did you finish overall?</div>
+        <div class="flex justify-between">
+          <input
+            type="range"
+            min="1"
+            max="100"
+            v-model="percentOverall"
+            class="slider overall place-self-center"
+          />
+          <div>{{ percentOverall }}%</div>
+        </div>
       </div>
-    </div>
-    <div class="slider-section">
-      <div>How much vegetable did you finish?</div>
-      <div class="flex justify-between">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          v-model="percentVegetable"
-          class="slider vegetable place-self-center"
-        />
-        <div>{{ percentVegetable }}%</div>
+      <div class="slider-section">
+        <div>How much rice/noodle did you finish?</div>
+        <div class="flex justify-between">
+          <input
+            type="range"
+            min="1"
+            max="100"
+            v-model="percentRice"
+            class="slider rice place-self-center"
+          />
+          <div>{{ percentRice }}%</div>
+        </div>
       </div>
-    </div>
-    <div class="slider-section">
-      <div>How much meat did you finish?</div>
-      <div class="flex justify-between">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          v-model="percentMeat"
-          class="slider meat place-self-center"
-        />
-        <div>{{ percentMeat }}%</div>
+      <div class="slider-section">
+        <div>How much vegetable did you finish?</div>
+        <div class="flex justify-between">
+          <input
+            type="range"
+            min="1"
+            max="100"
+            v-model="percentVegetable"
+            class="slider vegetable place-self-center"
+          />
+          <div>{{ percentVegetable }}%</div>
+        </div>
       </div>
-    </div>
-    <div class="text-gray-400 text-xs mx-6">
-      * For not applicable food type, please select 100%
-    </div>
-    <div
-      class="btn place-content-center text-white text-xl text-center"
-      @click="handleSubmit"
-    >
-      Submit
-    </div>
+      <div class="slider-section">
+        <div>How much meat did you finish?</div>
+        <div class="flex justify-between">
+          <input
+            type="range"
+            min="1"
+            max="100"
+            v-model="percentMeat"
+            class="slider meat place-self-center"
+          />
+          <div>{{ percentMeat }}%</div>
+        </div>
+      </div>
+      <div class="text-gray-400 text-xs mx-6">
+        * For not applicable food type, please select 100%
+      </div>
+      <div
+        class="btn m-auto text-white text-center font-bold"
+        @click="handleSubmit"
+      >
+        Submit
+      </div>
+    </a-spin>
   </div>
 </template>
 
@@ -92,14 +94,16 @@ import mainHeader from "@/components/mainHeader.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosRequest from "@/utils/request";
-import axios from "axios";
-import { message } from 'ant-design-vue';
-const percentOverall = ref(90);
-const percentRice = ref(90);
-const percentVegetable = ref(90);
-const percentMeat = ref(90);
-let compressedPic = null
+import { message } from "ant-design-vue";
+import cameraIcon from "@/assets/camera.svg"
+const percentOverall = ref(80);
+const percentRice = ref(80);
+const percentVegetable = ref(80);
+const percentMeat = ref(80);
+const picUrl = ref();
+let compressedPic = null;
 const uploadFile = ref(null);
+const isLoading = ref(false);
 const handleTakePic = () => {
   uploadFile.value.click();
 };
@@ -110,9 +114,8 @@ const handleGetFile = async (e) => {
     type: "image/jpeg",
   });
   picUrl.value = URL.createObjectURL(file);
-  compressedPic = compressedFile
+  compressedPic = compressedFile;
 };
-const picUrl = ref();
 
 const compressImage = async (file, { quality = 1, type = file.type }) => {
   return new Promise((resolve, reject) => {
@@ -160,24 +163,25 @@ const compressImage = async (file, { quality = 1, type = file.type }) => {
 const router = useRouter();
 const handleSubmit = async () => {
   if (compressedPic === null) {
-    message.error('Please take a photo first');
-    return
+    message.error("Please take a photo first");
+    return;
   }
+  isLoading.value = true;
   let bodyFormData = new FormData();
-  bodyFormData.append('pic', compressedPic); 
-  bodyFormData.append('rice', Number(percentRice.value)); 
-  bodyFormData.append('vegetable', Number(percentVegetable.value)); 
-  bodyFormData.append('meat', Number(percentMeat.value)); 
-  bodyFormData.append('overall', Number(percentOverall.value)); 
-  let data = await axiosRequest(
-    "post",
-    "feedback",
-    bodyFormData,
-    true,
-    {"Content-Type": "multipart/form-data"}
-  );
+  bodyFormData.append("pic", compressedPic);
+  bodyFormData.append("rice", Number(percentRice.value));
+  bodyFormData.append("vegetable", Number(percentVegetable.value));
+  bodyFormData.append("meat", Number(percentMeat.value));
+  bodyFormData.append("overall", Number(percentOverall.value));
+  let data = await axiosRequest("post", "feedback", bodyFormData, true, {
+    "Content-Type": "multipart/form-data",
+  });
+  isLoading.value = false;
   if (data.error === false) {
     message.success("successfully submitted!");
+    if (data.result.new_badge) {
+      message.success("🎉You got new a badge!🎉");
+    }
     router.push({
       path: "/",
     });
@@ -216,7 +220,7 @@ const handleSubmit = async () => {
   line-height: 12vw;
   margin: 10vw 5vw;
   border-radius: 5vw;
-  background-color: #348b7b;
+  background-color: #258D52;
 }
 .camera-image {
   width: 16vw;
@@ -241,8 +245,8 @@ const handleSubmit = async () => {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
-  width: 0.8rem; /* Set a specific slider handle width */
-  height: 0.8rem; /* Slider handle height */
+  width: 1rem; /* Set a specific slider handle width */
+  height: 1rem; /* Slider handle height */
   background: #04aa6d; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }

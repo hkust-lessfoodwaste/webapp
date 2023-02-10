@@ -24,11 +24,11 @@
         placeholder="Confirm password"
         v-model="password2"
       />
-      <span class="text-btn" @click="handleToLogin"
+      <span class="text-btn color-primary" @click="handleToLogin"
         >Already have an account?</span
       >
       <div class="btn-group">
-        <div class="btn primary-btn font-bold" @click="handleRegister">Signup</div>
+        <div class="btn primary-btn bg-color-primary font-bold" @click="handleRegister">Signup</div>
       </div>
     </a-spin>
   </div>
@@ -91,7 +91,7 @@ const handleToLogin = () => {
 }
 .header {
   height: 20vh;
-  background: #348b7b;
+  background: #68B984;
 }
 .input {
   background: #efefef;
@@ -102,7 +102,6 @@ const handleToLogin = () => {
   border-radius: 4vw;
 }
 .text-btn {
-  color: #348b7b;
   margin: 2.5vw 5vw;
 }
 .btn-group {
@@ -117,11 +116,6 @@ const handleToLogin = () => {
   border-radius: 4.5vw;
 }
 .btn-group .primary-btn {
-  background: #348b7b;
   color: white;
-}
-.btn-group .secondary-btn {
-  background: #ebf4f3;
-  color: #348b7b;
 }
 </style>

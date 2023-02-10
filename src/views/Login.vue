@@ -12,10 +12,10 @@
         placeholder="password"
         v-model="password"
       />
-      <span class="text-btn" @click="handleToRecover">Forget password?</span>
+      <span class="text-btn color-primary" @click="handleToRecover">Forget password?</span>
       <div class="btn-group">
-        <div class="btn primary-btn font-bold" @click="handleLogin">Login</div>
-        <div class="btn secondary-btn font-bold" @click="handleToRegister">Signup</div>
+        <div class="btn primary-btn bg-color-primary font-bold" @click="handleLogin">Login</div>
+        <div class="btn secondary-btn color-primary font-bold" @click="handleToRegister">Signup</div>
       </div>
     </a-spin>
   </div>
@@ -75,7 +75,7 @@ const handleToRecover = () => {
 }
 .header {
   height: 20vh;
-  background: #348b7b;
+  background: #68B984;
 }
 .input {
   background: #efefef;
@@ -86,7 +86,6 @@ const handleToRecover = () => {
   border-radius: 4vw;
 }
 .text-btn {
-  color: #348b7b;
   margin: 2.5vw 5vw;
 }
 .btn-group {
@@ -101,11 +100,10 @@ const handleToRecover = () => {
   border-radius: 4.5vw;
 }
 .btn-group .primary-btn {
-  background: #348b7b;
   color: white;
 }
 .btn-group .secondary-btn {
   background: #ebf4f3;
-  color: #348b7b;
+  color: #68B984;
 }
 </style>

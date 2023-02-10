@@ -1,7 +1,10 @@
 <script lang='jsx'>
 import { toRaw } from 'vue';
 import Canvas from '@antv/f2-vue';
-import { Chart, Interval, Axis } from '@antv/f2';
+import { Chart, Interval, Axis, Legend, withLegend, LineGuide } from '@antv/f2';
+import riceicon from "@/assets/rice_icon.svg";
+import meaticon from "@/assets/meat_icon.svg";
+import vegeicon from "@/assets/vege_icon.svg";
 const mockData = [
 {
 a: '1',
@@ -42,7 +45,7 @@ color: '#FFF2E3'
 ];
 export default {
   name: 'ringChart',
-  props: ["summary"],
+  props: ["summary", "legend"],
   data() {
     return {
       data: []
@@ -70,8 +73,18 @@ export default {
     }
   },
   render() {
+    let legend;
+    if (this.legend) {
+      legend = <div className="legend">
+        <div className="row"><riceicon class="icon" fill="#F39221"/> <div style={{color: "#F39221"}}>{this.summary.rice}% </div></div>
+        <div className="row"><vegeicon class="icon" fill="#68A885"/> <div style={{color: "#68A885"}}>{this.summary.vegetable}% </div></div>
+        <div className="row"><meaticon class="icon" fill="#A81E2D"/> <div style={{color: "#A81E2D"}}>{this.summary.meat}% </div></div>
+      </div>
+    }
+    
     return (
-      <Canvas pixelRatio={ window.devicePixelRatio} >
+      <div className="container">
+      <Canvas pixelRatio={ window.devicePixelRatio}>
         <Chart
           data={this.data}
           coord={{
@@ -83,10 +96,30 @@ export default {
           <Interval x="a" y="b" color={{field: "color", callback: (value) => {return value}}} adjust="stack" />
         </Chart>
       </Canvas>
+    {legend}
+      </div>
     );
   },
 };
 </script>
 
-<style>
+<style scoped>
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.legend {
+  font-size: 3vw;
+  align-self: center;
+}
+.legend .row {
+  display: flex;
+  margin: 0.7vw 0;
+}
+.icon {
+  width: 3.5vw;
+  height: 3.5vw;
+  margin: 0.5vw
+}
 </style>

@@ -5,6 +5,7 @@ import { babel } from "@rollup/plugin-babel";
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import path from 'path'
+import svgLoader from "vite-svg-loader"
 
 const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g;
 const DRIVE_LETTER_REGEX = /^[a-z]:/i;
@@ -24,10 +25,11 @@ export default defineConfig({
             runtime: "automatic",
             importSource: "@antv/f2",
           },
-        ],
+        ]
       ],
     }),
     vue(),
+    svgLoader(),
     vueJsx(),
   ],
   resolve: {

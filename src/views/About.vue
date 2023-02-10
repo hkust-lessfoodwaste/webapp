@@ -16,15 +16,16 @@
         <div>
           2. Everytime finishing your food, press the camera button, take a
           photo of the clean plate, and use the sliders to input how much you
-          finish. Finally, press the submit button.
+          complete. Finally, press the submit button.
         </div>
         <div>
           3. Your inputs and photo will be shown on your main page if it is
           successfully submitted.
         </div>
         <div>
-          4. <b>Persist for two weeks!</b> When the campaign is over, we will
-          contact the qualified participants with quality inputs through email.
+          4. <b>Try to get all badges on the badge wall!</b> If you get the
+          "Final award" badge, you will receive the final reward after the
+          campaign.
         </div>
       </div>
       <div class="text-lg font-bold">Privacy Policies</div>
@@ -66,7 +67,7 @@ const handleLogout = () => {
   border-radius: 4.5vw;
 }
 .primary-btn {
-  background: #348b7b;
+  background: #258d52;
   color: white;
 }
 </style>
