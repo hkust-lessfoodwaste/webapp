@@ -15,8 +15,8 @@
         <div>1. Make sure you register with your own ITSC.</div>
         <div>
           2. Everytime finishing your food, press the camera button, take a
-          photo of the clean plate, and use the sliders to input how much you
-          complete. Finally, press the submit button.
+          photo of the clean plate, and input how much you complete. Finally,
+          press the submit button.
         </div>
         <div>
           3. Your inputs and photo will be shown on your main page if it is

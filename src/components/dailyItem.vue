@@ -10,7 +10,7 @@
         <div class="m-4">
           <div class="font_2">{{ props.data.overall }}% complete</div>
           <div class="font_3">
-            {{ timestampToStr(props.data.timestamp * 1000) }}
+            {{ timestampToTimeStr(props.data.timestamp) }}
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@
 <script setup>
 import { ref } from "vue";
 const props = defineProps(["data"]);
-import timestampToStr from "@/utils/utils";
+import { timestampToTimeStr } from "@/utils/utils";
 import ringChart from "@/components/ringChart.vue";
 const previewImage = ref(null);
 const handlePreviewImage = (flag) => {

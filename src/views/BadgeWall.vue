@@ -2,10 +2,6 @@
   <div class="page">
     <main-header />
     <a-spin :spinning="badgeList == null" tip="loading">
-      <div class="text-center my-2">
-        <div class="text-lg font-bold">My badge wall</div>
-      </div>
-
       <div class="flex w-screen flex-wrap justify-between">
         <div v-for="item in badgeList" :key="item.id" class="badge my-2">
           <a-popover :title="item.name" placement="bottom">

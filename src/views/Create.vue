@@ -24,60 +24,93 @@
       >
         <camera-icon class="camera-image place-self-center" />
       </div>
-      <div class="slider-section">
-        <div>How much food did you finish overall?</div>
-        <div class="flex justify-between">
-          <input
-            type="range"
-            min="1"
-            max="100"
-            v-model="percentOverall"
-            class="slider overall place-self-center"
-          />
-          <div>{{ percentOverall }}%</div>
+      <div class="input-section">
+        <div class="my-1 flex">
+          <tableware-icon class="input-icon" fill="" /><span
+            >How much food did you finish overall?</span
+          >
+        </div>
+        <div class="w-full text-center">
+          <a-radio-group
+            v-model:value="percentOverall"
+            button-style="solid"
+            size="small"
+          >
+            <a-radio-button value="0">0%</a-radio-button>
+            <a-radio-button value="20">20%</a-radio-button>
+            <a-radio-button value="40">40%</a-radio-button>
+            <a-radio-button value="60">60%</a-radio-button>
+            <a-radio-button value="80">80%</a-radio-button>
+            <a-radio-button value="100">100%</a-radio-button>
+          </a-radio-group>
         </div>
       </div>
-      <div class="slider-section">
-        <div>How much rice/noodle did you finish?</div>
-        <div class="flex justify-between">
-          <input
-            type="range"
-            min="1"
-            max="100"
-            v-model="percentRice"
-            class="slider rice place-self-center"
-          />
-          <div>{{ percentRice }}%</div>
+      <div class="input-section">
+        <div class="my-1 flex">
+          <rice-icon class="input-icon" fill="#F39221" /><span
+            >How much rice/noodle did you finish?</span
+          >
+        </div>
+        <div class="w-full text-center">
+          <a-radio-group
+            v-model:value="percentRice"
+            button-style="solid"
+            size="small"
+          >
+            <a-radio-button value="0">0%</a-radio-button>
+            <a-radio-button value="20">20%</a-radio-button>
+            <a-radio-button value="40">40%</a-radio-button>
+            <a-radio-button value="60">60%</a-radio-button>
+            <a-radio-button value="80">80%</a-radio-button>
+            <a-radio-button value="100">100%</a-radio-button>
+          </a-radio-group>
         </div>
       </div>
-      <div class="slider-section">
-        <div>How much vegetable did you finish?</div>
-        <div class="flex justify-between">
-          <input
-            type="range"
-            min="1"
-            max="100"
-            v-model="percentVegetable"
-            class="slider vegetable place-self-center"
-          />
-          <div>{{ percentVegetable }}%</div>
+      <div class="input-section">
+        <div class="my-1 flex">
+          <vege-icon class="input-icon" fill="#68A885" /><span
+            >How much vegetable did you finish?</span
+          >
+        </div>
+        <div class="w-full text-center">
+          <a-radio-group
+            v-model:value="percentVegetable"
+            button-style="solid"
+            size="small"
+          >
+            <a-radio-button value="0">0%</a-radio-button>
+            <a-radio-button value="20">20%</a-radio-button>
+            <a-radio-button value="40">40%</a-radio-button>
+            <a-radio-button value="60">60%</a-radio-button>
+            <a-radio-button value="80">80%</a-radio-button>
+            <a-radio-button value="100">100%</a-radio-button>
+          </a-radio-group>
         </div>
       </div>
-      <div class="slider-section">
-        <div>How much meat did you finish?</div>
-        <div class="flex justify-between">
-          <input
-            type="range"
-            min="1"
-            max="100"
-            v-model="percentMeat"
-            class="slider meat place-self-center"
-          />
-          <div>{{ percentMeat }}%</div>
+      <div class="input-section">
+        <div class="my-1 flex">
+          <meat-icon class="input-icon" fill="#A81E2D" /><span
+            >How much meat did you finish?</span
+          >
+        </div>
+        <div class="w-full text-center">
+          <a-radio-group
+            v-model:value="percentMeat"
+            button-style="solid"
+            size="small"
+          >
+            <a-radio-button value="0">0%</a-radio-button>
+            <a-radio-button value="20">20%</a-radio-button>
+            <a-radio-button value="40">40%</a-radio-button>
+            <a-radio-button value="60">60%</a-radio-button>
+            <a-radio-button value="80">80%</a-radio-button>
+            <a-radio-button value="100">100%</a-radio-button>
+          </a-radio-group>
         </div>
       </div>
-      <div class="text-gray-400 text-xs mx-6">
-        * For not applicable food type, please select 100%
+      <div class="text-gray-400 text-sm mx-6">
+        * For Not Applicable food type (i.e., not in your meal), please select
+        100%
       </div>
       <div
         class="btn m-auto text-white text-center font-bold"
@@ -95,11 +128,15 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosRequest from "@/utils/request";
 import { message } from "ant-design-vue";
-import cameraIcon from "@/assets/camera.svg"
-const percentOverall = ref(80);
-const percentRice = ref(80);
-const percentVegetable = ref(80);
-const percentMeat = ref(80);
+import cameraIcon from "@/assets/camera.svg";
+import riceIcon from "@/assets/rice_icon.svg";
+import meatIcon from "@/assets/meat_icon.svg";
+import vegeIcon from "@/assets/vege_icon.svg";
+import tablewareIcon from "@/assets/tableware_icon.svg";
+const percentOverall = ref();
+const percentRice = ref();
+const percentVegetable = ref();
+const percentMeat = ref();
 const picUrl = ref();
 let compressedPic = null;
 const uploadFile = ref(null);
@@ -166,6 +203,15 @@ const handleSubmit = async () => {
     message.error("Please take a photo first");
     return;
   }
+  if (
+    !percentRice.value ||
+    !percentVegetable.value ||
+    !percentMeat.value ||
+    !percentOverall.value
+  ) {
+    message.error("Please input your completeness");
+    return;
+  }
   isLoading.value = true;
   let bodyFormData = new FormData();
   bodyFormData.append("pic", compressedPic);
@@ -180,11 +226,18 @@ const handleSubmit = async () => {
   if (data.error === false) {
     message.success("successfully submitted!");
     if (data.result.new_badge) {
-      message.success("🎉You got new a badge!🎉");
+      message.success("🎉You got new a badge!🎉", 10);
     }
     router.push({
-      path: "/",
+      name: "Home",
+      params: { needReload: true },
     });
+    percentOverall.value = null;
+    percentRice.value = null;
+    percentVegetable.value = null;
+    percentMeat.value = null;
+    picUrl.value = null;
+    compressedPic = null;
   }
 };
 </script>
@@ -220,65 +273,20 @@ const handleSubmit = async () => {
   line-height: 12vw;
   margin: 10vw 5vw;
   border-radius: 5vw;
-  background-color: #258D52;
+  background-color: #258d52;
 }
 .camera-image {
   width: 16vw;
   height: 16vw;
 }
-.slider-section {
+.input-section {
   width: 90vw;
-  margin: 5vw;
+  margin: 2vw 5vw;
 }
-.slider {
-  -webkit-appearance: none; /* Override default CSS styles */
-  appearance: none;
-  width: 85%; /* Full-width */
-  height: 0.8rem; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
-  transition: opacity 0.2s;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 1rem; /* Set a specific slider handle width */
-  height: 1rem; /* Slider handle height */
-  background: #04aa6d; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
-
-.slider::-moz-range-thumb {
-  width: 0.8rem; /* Set a specific slider handle width */
-  height: 0.8rem; /* Slider handle height */
-  background: #04aa6d; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
-.overall::-webkit-slider-thumb {
-  background: #000000;
-}
-.overall::-moz-range-thumb {
-  background: #000000;
-}
-.rice::-webkit-slider-thumb {
-  background: #f48f22;
-}
-.rice::-moz-range-thumb {
-  background: #f48f22;
-}
-.vegetable::-webkit-slider-thumb {
-  background: #67a784;
-}
-.vegetable::-moz-range-thumb {
-  background: #67a784;
-}
-.meat::-webkit-slider-thumb {
-  background: #a81e2d;
-}
-.meat::-moz-range-thumb {
-  background: #a81e2d;
+.input-icon {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.5vw 1vw;
+  align-self: center;
 }
 </style>

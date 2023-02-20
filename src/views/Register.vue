@@ -28,7 +28,12 @@
         >Already have an account?</span
       >
       <div class="btn-group">
-        <div class="btn primary-btn bg-color-primary font-bold" @click="handleRegister">Signup</div>
+        <div
+          class="btn primary-btn bg-color-primary font-bold"
+          @click="handleRegister"
+        >
+          Signup
+        </div>
       </div>
     </a-spin>
   </div>
@@ -65,8 +70,14 @@ const handleRegister = async () => {
   });
   isLoading.value = false;
   if (data.error === false) {
+    let token = data.result;
+    localStorage.setItem(
+      "food_minus_app",
+      JSON.stringify({ token: token, itsc: itsc.value })
+    );
     router.push({
-      path: "/",
+      name: "Home",
+      params: { needReload: true },
     });
   }
 };
@@ -91,7 +102,7 @@ const handleToLogin = () => {
 }
 .header {
   height: 20vh;
-  background: #68B984;
+  background: #68b984;
 }
 .input {
   background: #efefef;

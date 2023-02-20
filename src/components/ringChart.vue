@@ -1,7 +1,7 @@
 <script lang='jsx'>
 import { toRaw } from 'vue';
 import Canvas from '@antv/f2-vue';
-import { Chart, Interval, Axis, Legend, withLegend, LineGuide } from '@antv/f2';
+import { Chart, Interval, Axis,  LineGuide } from '@antv/f2';
 import riceicon from "@/assets/rice_icon.svg";
 import meaticon from "@/assets/meat_icon.svg";
 import vegeicon from "@/assets/vege_icon.svg";
@@ -45,7 +45,7 @@ color: '#FFF2E3'
 ];
 export default {
   name: 'ringChart',
-  props: ["summary", "legend"],
+  props: ["summary"],
   data() {
     return {
       data: []
@@ -54,13 +54,19 @@ export default {
   methods: {
     process() {
       let data = JSON.parse(JSON.stringify(mockData))
-      console.log(mockData)
-      data[0].b = Number(this.summary.meat) / 100
-      data[1].b = Number(this.summary.vegetable) / 100
-      data[2].b = Number(this.summary.rice) / 100
-      data[3].b = 1 - Number(this.summary.meat) / 100
-      data[4].b = 1 - Number(this.summary.vegetable) / 100
-      data[5].b = 1 - Number(this.summary.rice) / 100
+      if (!this.summary) {
+        var meat = 0
+        var vegetable = 0
+        var rice = 0
+      } else {
+        var { meat, vegetable, rice} = this.summary
+      }
+      data[0].b = Number(meat) / 100
+      data[1].b = Number(vegetable) / 100
+      data[2].b = Number(rice) / 100
+      data[3].b = 1 - Number(meat) / 100
+      data[4].b = 1 - Number(vegetable) / 100
+      data[5].b = 1 - Number(rice) / 100
       this.data = data
     }
   },
@@ -73,15 +79,6 @@ export default {
     }
   },
   render() {
-    let legend;
-    if (this.legend) {
-      legend = <div className="legend">
-        <div className="row"><riceicon class="icon" fill="#F39221"/> <div style={{color: "#F39221"}}>{this.summary.rice}% </div></div>
-        <div className="row"><vegeicon class="icon" fill="#68A885"/> <div style={{color: "#68A885"}}>{this.summary.vegetable}% </div></div>
-        <div className="row"><meaticon class="icon" fill="#A81E2D"/> <div style={{color: "#A81E2D"}}>{this.summary.meat}% </div></div>
-      </div>
-    }
-    
     return (
       <div className="container">
       <Canvas pixelRatio={ window.devicePixelRatio}>
@@ -96,7 +93,6 @@ export default {
           <Interval x="a" y="b" color={{field: "color", callback: (value) => {return value}}} adjust="stack" />
         </Chart>
       </Canvas>
-    {legend}
       </div>
     );
   },
@@ -109,17 +105,9 @@ export default {
   height: 100%;
   display: flex;
 }
-.legend {
-  font-size: 3vw;
-  align-self: center;
-}
-.legend .row {
-  display: flex;
-  margin: 0.7vw 0;
-}
 .icon {
   width: 3.5vw;
   height: 3.5vw;
-  margin: 0.5vw
+  margin: 0.5vw;
 }
 </style>

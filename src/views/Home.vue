@@ -2,19 +2,77 @@
   <div class="page">
     <main-header />
     <div class="flex justify-between mx-6 mt-4 mb-2">
-      <div class="text-lg font-bold">Community overview</div>
+      <div class="text-lg font-bold">Overview</div>
     </div>
     <div class="section flex flex-col mx-auto">
-      <div class="flex justify-between my-1">
-        <div class="ring-chart">
-          <ring-chart :summary="weeklyHKUST" :legend="true"/>
+      <div class="flex justify-between">
+        <div class="ring-chart" style="width: 30%">
+          <ring-chart :summary="overviewAvgData" />
         </div>
-        <div class="self-center" style="width: 45vw">
-          <div class="color-primary text-lg font-bold">This week’s HKUST:</div>
-          <div class="color-primary text-lg">
-            {{ weeklyHKUST.overall }}% complete
+        <div style="width: 70%" class="flex flex-col justify-around">
+          <div class="flex justify-between">
+            <div>
+              <div class="flex">
+                <tableware-icon class="summary-icon" />
+                <span>Overall</span>
+              </div>
+              <div class="text-center">
+                <span class="font-bold text-xl" v-if="overviewAvgData">{{
+                  overviewAvgData.overall
+                }}</span
+                ><span class="font-bold text-xl" v-else>--</span>
+                <span>%</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <rice-icon class="summary-icon" fill="#F39221" />
+                <span>Rice</span>
+              </div>
+              <div class="text-center">
+                <span class="font-bold text-xl" v-if="overviewAvgData">{{
+                  overviewAvgData.rice
+                }}</span
+                ><span class="font-bold text-xl" v-else>--</span>
+                <span>%</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <vege-icon class="summary-icon" fill="#68A885" /> Vege
+              </div>
+              <div class="text-center">
+                <span class="font-bold text-xl" v-if="overviewAvgData">{{
+                  overviewAvgData.vegetable
+                }}</span
+                ><span class="font-bold text-xl" v-else>--</span>
+                <span>%</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex">
+                <meat-icon class="summary-icon" fill="#A81E2D" /> Meat
+              </div>
+              <div class="text-center">
+                <span class="font-bold text-xl" v-if="overviewAvgData">{{
+                  overviewAvgData.meat
+                }}</span
+                ><span class="font-bold text-xl" v-else>--</span>
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+          <div class="desc text-xs" v-if="overviewAvgData">
+            Average data from
+            {{ timestampToShortDateStr(overviewTime.earliest) }} to
+            {{ timestampToShortDateStr(overviewTime.latest) }}
           </div>
         </div>
+      </div>
+      <div class="text-xs text-center compare" v-if="overviewRelativeData">
+        You're saving {{ Math.abs(overviewRelativeData.overall) }}%
+        {{ overviewRelativeData.overall < 0 ? "below" : "above" }} the average
+        of HKUST {{ overviewRelativeData.overall < 0 ? "🥺" : "🥳" }}
       </div>
     </div>
 
@@ -66,36 +124,41 @@
       </div>
     </a-spin>
     <div class="fixed bottom-5 right-3 flex-col image-wrapper pos">
-      <camera-icon
-        class="camera-image"
-        @click="handleToCreatePage"
-      />
+      <camera-icon class="camera-image" @click="handleToCreatePage" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted,onUpdated, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import dailyItem from "@/components/dailyItem.vue";
 import mainHeader from "@/components/mainHeader.vue";
 import ringChart from "@/components/ringChart.vue";
 import axiosRequest from "@/utils/request";
-import cameraIcon from "@/assets/camera.svg"
-
-const weeklyHKUST = {
-  overall: 81,
-  vegetable: 88,
-  meat: 77,
-  rice: 77,
-};
+import cameraIcon from "@/assets/camera.svg";
+import riceIcon from "@/assets/rice_icon.svg";
+import meatIcon from "@/assets/meat_icon.svg";
+import vegeIcon from "@/assets/vege_icon.svg";
+import tablewareIcon from "@/assets/tableware_icon.svg";
+import { timestampToShortDateStr } from "@/utils/utils";
+const overviewAvgData = ref(null);
+const overviewRelativeData = ref(null);
+const overviewTime = ref(null);
 
 const badgePrefix =
   "https://fyp-smart-canteen.s3.ap-northeast-1.amazonaws.com/badges/";
 const badgeList = ref(null);
 const mealList = ref(null);
 const mealListLenLimit = 3;
+
 const fetchData = async () => {
+  let overviewData = await axiosRequest("get", "overview", {}, true);
+  if (overviewData.error === false) {
+    overviewAvgData.value = overviewData.result.curr_average;
+    overviewRelativeData.value = overviewData.result.relative_average;
+    overviewTime.value = overviewData.result.time;
+  }
   let mealData = await axiosRequest("get", "history", {}, true);
   if (mealData.error === false) {
     mealList.value = mealData.result;
@@ -106,10 +169,20 @@ const fetchData = async () => {
   }
 };
 
+const router = useRouter();
+const route = useRoute()
 onMounted(() => {
   fetchData();
 });
-const router = useRouter();
+watch(
+  () => route.params.needReload,
+  async (needReload) => {
+    if (needReload) {
+      fetchData()
+    }
+  }
+);
+
 const handleToHistoryPage = () => {
   router.push({
     name: "History",
@@ -140,6 +213,12 @@ const handleToBadgePage = () => {
   padding-bottom: 20vw;
   background: #fafafa;
 }
+.summary-icon {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.5vw;
+  align-self: center;
+}
 .setting-image {
   width: 7vw;
   height: 7vw;
@@ -150,6 +229,15 @@ const handleToBadgePage = () => {
   background-color: #ebf4f3;
   border-radius: 5vw;
   overflow: scroll;
+  position: relative;
+}
+.section .desc {
+  color: gray;
+  text-align: right;
+  font-style: italic;
+}
+.section .compare {
+  color: #258d52;
 }
 .ring-chart {
   width: 25vw;

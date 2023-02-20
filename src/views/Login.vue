@@ -12,10 +12,22 @@
         placeholder="password"
         v-model="password"
       />
-      <span class="text-btn color-primary" @click="handleToRecover">Forget password?</span>
+      <span class="text-btn color-primary" @click="handleToRecover"
+        >Forget password?</span
+      >
       <div class="btn-group">
-        <div class="btn primary-btn bg-color-primary font-bold" @click="handleLogin">Login</div>
-        <div class="btn secondary-btn color-primary font-bold" @click="handleToRegister">Signup</div>
+        <div
+          class="btn primary-btn bg-color-primary font-bold"
+          @click="handleLogin"
+        >
+          Login
+        </div>
+        <div
+          class="btn secondary-btn color-primary font-bold"
+          @click="handleToRegister"
+        >
+          Signup
+        </div>
       </div>
     </a-spin>
   </div>
@@ -48,7 +60,8 @@ const handleLogin = async () => {
       JSON.stringify({ token: token, itsc: itsc.value })
     );
     router.push({
-      path: "/",
+      name: "Home",
+      params: { needReload: true },
     });
   }
 };
@@ -75,7 +88,7 @@ const handleToRecover = () => {
 }
 .header {
   height: 20vh;
-  background: #68B984;
+  background: #68b984;
 }
 .input {
   background: #efefef;
@@ -104,6 +117,6 @@ const handleToRecover = () => {
 }
 .btn-group .secondary-btn {
   background: #ebf4f3;
-  color: #68B984;
+  color: #68b984;
 }
 </style>

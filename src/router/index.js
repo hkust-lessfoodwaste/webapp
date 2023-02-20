@@ -37,8 +37,8 @@ const routes = [
     component: () => import("@/views/About.vue"),
   }
 ];
-
-export default createRouter({
+const Router = createRouter({
   history: createWebHashHistory(),
   routes,
-});
+})
+export default Router;

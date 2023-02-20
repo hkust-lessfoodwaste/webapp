@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useRouter } from "vue-router";
+import Router from "@/router/index";
 import { message } from "ant-design-vue";
 
 const server = "https://smart-canteen-huatm1.herokuapp.com/";
@@ -11,11 +11,10 @@ const axiosRequest = (
   headers = { "Content-Type": "application/json" }
 ) => {
   return new Promise((resolve, reject) => {
-    const router = useRouter();
     if (auth) {
       let appStorage = JSON.parse(localStorage.getItem("food_minus_app"));
       if (!appStorage || !appStorage.itsc || !appStorage.token) {
-        router.push({
+        Router.push({
           path: "/login",
         });
         return;
@@ -34,7 +33,14 @@ const axiosRequest = (
         .post(server + url, data, headers)
         .then((res) => {
           if (res.data.error) {
-            message.error(res.data.error);
+            if (res.data.error === "Unable to locate user") {
+              message.error(res.data.error);
+              Router.push({
+                path: "/login",
+              });
+            } else {
+              message.error(res.data.error);
+            }
           }
           resolve(res.data);
         })
@@ -46,12 +52,19 @@ const axiosRequest = (
         .get(server + url, { params: data })
         .then((res) => {
           if (res.data.error) {
-            message.error(res.data.error);
+            if (res.data.error === "Unable to locate user") {
+              message.error(res.data.error);
+              Router.push({
+                path: "/login",
+              });
+            } else {
+              message.error(res.data.error);
+            }
           }
           resolve(res.data);
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           message.error(err.message);
         });
     }
