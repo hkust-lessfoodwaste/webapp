@@ -1,32 +1,17 @@
 <template>
   <div class="page">
-    <a-spin :spinning="isLoading" tip="Logging in">
+    <a-spin :spinning="isLoading" tip="Sending email">
       <div class="header flex text-center items-center">
         <div class="w-full text-3xl font-bold text-white">HKUST Food Wise</div>
       </div>
-      <div class="text-center text-2xl font-bold my-8">Login</div>
+      <div class="text-center text-2xl font-bold my-8">Forget Password</div>
       <input type="text" class="input" placeholder="ITSC" v-model="itsc" />
-      <input
-        type="password"
-        class="input"
-        placeholder="password"
-        v-model="password"
-      />
-      <span class="text-btn color-primary" @click="handleToRecover"
-        >Forget password?</span
-      >
       <div class="btn-group">
         <div
           class="btn primary-btn bg-color-primary font-bold"
-          @click="handleLogin"
+          @click="handleSendEmail"
         >
-          Login
-        </div>
-        <div
-          class="btn secondary-btn color-primary font-bold"
-          @click="handleToRegister"
-        >
-          Signup
+          Verify Email
         </div>
       </div>
     </a-spin>
@@ -34,51 +19,33 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+const isLoading = ref(false);
+const itsc = ref("");
+const router = useRouter();
 import axiosRequest from "@/utils/request";
 import { message } from "ant-design-vue";
-const itsc = ref("");
-const password = ref("");
-const router = useRouter();
-const isLoading = ref(false);
-const handleLogin = async () => {
-  if (itsc.value.length === 0 || password.value.length === 0) {
+const handleSendEmail = async () => {
+  if (itsc.value.length === 0) {
     message.error("Please complete all fields");
     return;
   }
   isLoading.value = true;
-  let data = await axiosRequest("post", "login", {
+  let data = await axiosRequest("get", "forget", {
     itsc: itsc.value,
-    password: password.value,
   });
   isLoading.value = false;
   if (data.error === false) {
-    let token = data.result;
-    localStorage.setItem(
-      "food_minus_app",
-      JSON.stringify({ token: token, itsc: itsc.value })
-    );
     router.push({
-      name: "Home",
-      params: { needReload: true },
+      path: "/reset-password",
+      query: { itsc: itsc.value },
     });
   }
 };
-const handleToRegister = () => {
-  router.push({
-    path: "/register",
-  });
-};
-const handleToRecover = () => {
-  router.push({
-    path: "/forget-password",
-  });
-};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .page {
   position: fixed;
   top: 0;

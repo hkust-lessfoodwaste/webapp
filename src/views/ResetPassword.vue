@@ -1,21 +1,25 @@
 <template>
   <div class="page">
-    <a-spin :spinning="isLoading" tip="Signing up">
+    <a-spin :spinning="isLoading" tip="Verifying">
       <div class="header flex text-center items-center">
         <div class="w-full text-3xl font-bold text-white">HKUST Food Wise</div>
       </div>
-      <div class="text-center text-2xl font-bold my-8">Sign up</div>
-      <input type="text" class="input" placeholder="ITSC" v-model="itsc" />
+      <div class="text-center text-2xl font-bold my-8">Reset Password</div>
+      <div class="w-10/12 text-gray-600 m-auto">
+        An email with secure code was sent to
+        <span class="font-bold">{{ itsc }}@connect.ust.hk</span>. Please check
+        your spams if you didn't receive the email.
+      </div>
       <input
         type="text"
         class="input"
-        placeholder="Nickname"
-        v-model="nickname"
+        placeholder="Secure Code"
+        v-model="secureCode"
       />
       <input
         type="password"
         class="input"
-        placeholder="Password"
+        placeholder="New password"
         v-model="password"
       />
       <input
@@ -24,15 +28,12 @@
         placeholder="Confirm password"
         v-model="password2"
       />
-      <span class="text-btn color-primary" @click="handleToLogin"
-        >Already have an account?</span
-      >
       <div class="btn-group">
         <div
           class="btn primary-btn bg-color-primary font-bold"
-          @click="handleRegister"
+          @click="handleReset"
         >
-          Signup
+          Reset password
         </div>
       </div>
     </a-spin>
@@ -40,19 +41,31 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axiosRequest from "@/utils/request";
 import { message } from "ant-design-vue";
+const router = useRouter();
+const route = useRoute();
+
+const isLoading = ref(false);
 const itsc = ref("");
-const nickname = ref("");
+const secureCode = ref("");
 const password = ref("");
 const password2 = ref("");
-const isLoading = ref(false);
-const handleRegister = async () => {
+
+onMounted(() => {
+  if (!route.query || !route.query.itsc) {
+    router.push({ name: "Login" });
+  } else {
+    itsc.value = route.query.itsc;
+  }
+});
+
+const handleReset = async () => {
   if (
     itsc.value.length === 0 ||
-    nickname.value.length === 0 ||
+    secureCode.value.length === 0 ||
     password.value.length === 0 ||
     password2.value.length === 0
   ) {
@@ -61,36 +74,25 @@ const handleRegister = async () => {
   }
   if (password.value !== password2.value) {
     message.error("Passwords are not consistent");
+    return;
   }
   isLoading.value = true;
-  let data = await axiosRequest("post", "register", {
+  let data = await axiosRequest("post", "reset", {
     itsc: itsc.value,
-    name: nickname.value,
+    code: secureCode.value,
     password: password.value,
   });
   isLoading.value = false;
   if (data.error === false) {
-    let token = data.result;
-    localStorage.setItem(
-      "food_minus_app",
-      JSON.stringify({ token: token, itsc: itsc.value })
-    );
+    message.success("password successfully changed!")
     router.push({
-      name: "Home",
-      params: { needReload: true },
+      name: "Login",
     });
   }
 };
-const router = useRouter();
-const handleToLogin = () => {
-  router.push({
-    path: "/login",
-  });
-};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .page {
   position: fixed;
   top: 0;
@@ -128,5 +130,9 @@ const handleToLogin = () => {
 }
 .btn-group .primary-btn {
   color: white;
+}
+.btn-group .secondary-btn {
+  background: #ebf4f3;
+  color: #68b984;
 }
 </style>
