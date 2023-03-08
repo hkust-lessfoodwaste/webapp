@@ -28,8 +28,18 @@
           campaign.
         </div>
       </div>
-      <div class="text-lg font-bold">Privacy Policies</div>
-      <div class="ml-2">TBD</div>
+      <div class="text-lg font-bold">Contact us</div>
+      <div class="ml-2">
+        <a href="mailto: smartcanteen@ust.hk">smartcanteen@ust.hk</a>
+      </div>
+    </div>
+    <div class="flex justify-around">
+      <a href="https://ssc.ust.hk/" class="w-5/12 self-center" target="_blank"
+        ><img class="w-full object-contain" src="@/assets/SSC_logo.png"
+      /></a>
+      <a href="http://vis.cse.ust.hk/" class="w-5/12 self-center" target="_blank"
+        ><img class="w-full object-contain" src="@/assets/vislab_logo.png"
+      /></a>
     </div>
     <div class="btn primary-btn font-bold" @click="handleLogout">Logout</div>
   </div>
@@ -56,7 +66,6 @@ const handleLogout = () => {
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  padding-bottom: 20vw;
 }
 .btn {
   width: 90vw;

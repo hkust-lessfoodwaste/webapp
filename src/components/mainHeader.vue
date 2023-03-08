@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-between header fixed w-full top-0 z-10">
       <span class="text-lg font-bold self-center" v-if="routerPath === '/'"
-        >HKUST Food Minus</span
+        >HKUST Food Wise</span
       >
       <span v-else @click="handleToHomePage">
         <back-icon class="w-6 h-6" />
@@ -25,7 +25,7 @@ import backIcon from "@/assets/back.svg";
 
 const routerTitleMapper = {
   "/create": "Record daily meal",
-  "/about": "About this app",
+  "/about": "About this website",
   "/history": "My history",
   "/badge": "My badge wall"
 }
